@@ -55,7 +55,8 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
   :return: The Tensor for the last layer of output
   """
   # TODO: Implement function
-  he_init = tf.contrib.layers.variance_scaling_initializer()
+  #he_init = tf.contrib.layers.variance_scaling_initializer()
+  he_init = tf.random_normal_initializer(stddev=0.01)
   l2_regularizer = tf.contrib.layers.l2_regularizer(1e-3)
 
   # Add the 1x1 layers
@@ -114,7 +115,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
   for epoch in range(epochs):
     print("Epoch: {}/{}".format(epoch+1, epochs))
     for batch, (images, labels) in enumerate(get_batches_fn(batch_size)):
-      feed_dict = {input_image: images, correct_label: labels, keep_prob: 0.5, learning_rate: 1e-5}
+      feed_dict = {input_image: images, correct_label: labels, keep_prob: 0.5, learning_rate: 1e-3}
       _, loss = sess.run([train_op, cross_entropy_loss], feed_dict=feed_dict)
       print("  Batch: {}, Training Loss: {:.4f}".format(batch+1, loss))
 tests.test_train_nn(train_nn)
@@ -144,8 +145,8 @@ def run():
     #  https://datascience.stackexchange.com/questions/5224/how-to-prepare-augment-images-for-neural-network
 
     # TODO: Build NN using load_vgg, layers, and optimize function
-    epochs = 6
-    batch_size = 2
+    epochs = 10
+    batch_size = 5
     correct_label = tf.placeholder(tf.float32, [None, None, None, num_classes])
     learning_rate = tf.placeholder(tf.float32)
 
